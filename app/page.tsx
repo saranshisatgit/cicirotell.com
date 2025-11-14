@@ -1,65 +1,181 @@
-import Image from "next/image";
+'use client';
+
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
+import Link from 'next/link';
+import BlogList from '@/components/BlogList';
+
+interface MenuItem {
+  id: string;
+  title: string;
+  slug: string;
+}
+
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  image: {
+    id: string;
+    url: string;
+    name: string;
+  } | null;
+}
+
+interface HomeData {
+  page: {
+    title: string;
+    content: string | null;
+    featuredImage: {
+      url: string;
+      name: string;
+    } | null;
+    showInMenu: boolean;
+  };
+  menuPages: MenuItem[];
+  categories: Category[];
+}
 
 export default function Home() {
+  const [homeData, setHomeData] = useState<HomeData | null>(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchHomeData();
+  }, []);
+
+  const fetchHomeData = async () => {
+    try {
+      const res = await fetch('/api/public/home');
+      if (res.ok) {
+        const data = await res.json();
+        setHomeData(data);
+      }
+    } catch (error) {
+      console.error('Error fetching home page:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-sm text-gray-400">Loading...</div>
+      </div>
+    );
+  }
+
+  if (!homeData) {
+    return (
+      <div className="min-h-screen bg-white flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-light text-gray-900 mb-2">Welcome</h1>
+          <p className="text-sm text-gray-500">No home page configured</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
+    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
+      {/* Menu Bar */}
+      {homeData.page.showInMenu && homeData.menuPages.length > 0 && (
+        <div className="border-b border-gray-100">
+          <nav className="container mx-auto px-6 py-6">
+            <div className="flex justify-center gap-8">
+              {homeData.menuPages.map((page) => (
+                <Link
+                  key={page.id}
+                  href={`/pages/${page.slug}`}
+                  className="text-gray-700 text-xs font-light tracking-widest uppercase hover:text-gray-900 transition-colors"
+                >
+                  {page.title}
+                </Link>
+              ))}
+            </div>
+          </nav>
+        </div>
+      )}
+
+      {/* Hero Section with Rounded Image */}
+      {homeData.page.featuredImage && (
+        <div className="container mx-auto px-6 pt-12 pb-16">
+          <div className="relative w-full h-[85vh] rounded-2xl overflow-hidden shadow-xl">
+            <Image
+              src={homeData.page.featuredImage.url}
+              alt={homeData.page.title}
+              fill
+              sizes="100vw"
+              className="object-cover"
+              priority
+            />
+            
+            {/* Content Text Overlay */}
+            {homeData.page.content && (
+              <div className="absolute inset-0 flex items-center justify-center p-8">
+                <div className="max-w-3xl text-center">
+                  <p className="text-white text-base md:text-lg font-light leading-relaxed tracking-wide drop-shadow-lg">
+                    {homeData.page.content}
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Categories Grid */}
+      {homeData.categories.length > 0 && (
+        <div className="container mx-auto px-6 py-16">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-1">
+            {homeData.categories.map((category) => (
+              <Link
+                key={category.id}
+                href={`/category/${category.slug}`}
+                className="group relative aspect-square overflow-hidden"
+              >
+                {category.image ? (
+                  <Image
+                    src={category.image.url}
+                    alt={category.name}
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gray-100" />
+                )}
+                
+                {/* Category Name Overlay */}
+                <div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-30 transition-opacity duration-300 flex items-center justify-center pointer-events-none">
+                  <span className="text-white text-sm font-light tracking-widest uppercase opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    {category.name}
+                  </span>
+                </div>
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Blog Section */}
+      <div className="container mx-auto px-6 py-16">
+        <h2 className="text-2xl font-light text-gray-900 tracking-wide mb-8 text-center">
+          Latest Stories
+        </h2>
+        <BlogList />
+      </div>
+
+      {/* Footer */}
+      <footer className="border-t border-gray-100 py-8">
+        <div className="container mx-auto px-6 text-center">
+          <p className="text-xs text-gray-400 tracking-wide">
+            © {new Date().getFullYear()} {homeData.page.title}
           </p>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      </footer>
     </div>
   );
 }
