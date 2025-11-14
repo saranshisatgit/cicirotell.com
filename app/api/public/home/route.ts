@@ -20,23 +20,21 @@ export async function GET() {
       return NextResponse.json({ error: 'Home page not found' }, { status: 404 });
     }
 
-    // Get menu pages if showInMenu is enabled
-    let menuPages: any[] = [];
-    if (homePage.showInMenu) {
-      menuPages = await db.query.pages.findMany({
-        where: and(
-          eq(pages.published, true),
-          eq(pages.pageType, 'standard')
-        ),
-        columns: {
-          id: true,
-          title: true,
-          slug: true,
-          menuOrder: true,
-        },
-        orderBy: (pages, { asc }) => [asc(pages.menuOrder)],
-      });
-    }
+    // Get menu pages that have showInMenu enabled
+    const menuPages = await db.query.pages.findMany({
+      where: and(
+        eq(pages.published, true),
+        eq(pages.pageType, 'standard'),
+        eq(pages.showInMenu, true)
+      ),
+      columns: {
+        id: true,
+        title: true,
+        slug: true,
+        menuOrder: true,
+      },
+      orderBy: (pages, { asc }) => [asc(pages.menuOrder)],
+    });
 
     // Get all categories with their featured images
     const allCategories = await db.query.categories.findMany({

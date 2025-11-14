@@ -1,6 +1,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Heading } from '@/components/catalyst/heading';
+import { Button } from '@/components/catalyst/button';
+import { Input } from '@/components/catalyst/input';
+import { Textarea } from '@/components/catalyst/textarea';
+import { Select } from '@/components/catalyst/select';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/catalyst/table';
+import { Badge } from '@/components/catalyst/badge';
+import { Fieldset, Legend, FieldGroup, Field, Label, Description } from '@/components/catalyst/fieldset';
+import { Checkbox, CheckboxField } from '@/components/catalyst/checkbox';
+import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from '@/components/catalyst/dropdown';
+import { EllipsisVerticalIcon } from '@heroicons/react/16/solid';
 
 interface File {
   id: string;
@@ -192,165 +203,141 @@ export default function BlogManagement() {
   return (
     <div className="px-4 sm:px-0">
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Blog Posts</h2>
-        <button
-          onClick={() => {
-            resetForm();
-            setShowForm(!showForm);
-          }}
-          className="px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800"
-        >
-          {showForm ? 'Cancel' : 'Add Post'}
-        </button>
+        <Heading>Blog Posts</Heading>
+        {!showForm && (
+          <Button
+            onClick={() => {
+              resetForm();
+              setShowForm(true);
+            }}
+          >
+            Add Post
+          </Button>
+        )}
       </div>
 
       {showForm && (
-        <div className="bg-white shadow rounded-lg p-6 mb-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">
-            {editingPost ? 'Edit Post' : 'Create Post'}
-          </h3>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Title</label>
-              <input
-                type="text"
-                required
-                className="mt-1 block w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-md"
-                value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Slug</label>
-              <input
-                type="text"
-                className="mt-1 block w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-md"
-                value={formData.slug}
-                onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                placeholder="Leave blank to auto-generate"
-              />
-              <p className="mt-1 text-xs text-gray-500">URL-friendly version</p>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Excerpt</label>
-              <textarea
-                className="mt-1 block w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-md"
-                rows={2}
-                value={formData.excerpt}
-                onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Featured Image</label>
-              <div className="space-y-3">
-                <div>
-                  <label className="block">
-                    <span className="sr-only">Choose file</span>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleFileUpload}
-                      disabled={uploading}
-                      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-gray-900 file:text-white hover:file:bg-gray-800 file:cursor-pointer disabled:opacity-50"
-                    />
-                  </label>
-                  {uploading && <p className="text-xs text-gray-500 mt-1">Uploading...</p>}
+        <form onSubmit={handleSubmit} className="mt-6">
+          <Fieldset>
+            <Legend>{editingPost ? 'Edit Post' : 'Create Post'}</Legend>
+            <FieldGroup>
+              <Field>
+                <Label>Title</Label>
+                <Input
+                  name="title"
+                  required
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                />
+              </Field>
+              <Field>
+                <Label>Slug</Label>
+                <Input
+                  name="slug"
+                  value={formData.slug}
+                  onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                  placeholder="Leave blank to auto-generate"
+                />
+                <Description>URL-friendly version</Description>
+              </Field>
+              <Field>
+                <Label>Excerpt</Label>
+                <Textarea
+                  name="excerpt"
+                  rows={2}
+                  value={formData.excerpt}
+                  onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
+                />
+              </Field>
+              <Field>
+                <Label>Featured Image</Label>
+                <div className="space-y-3">
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={handleFileUpload}
+                    disabled={uploading}
+                    className="block w-full text-sm text-zinc-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-zinc-900 file:text-white hover:file:bg-zinc-800 file:cursor-pointer disabled:opacity-50 dark:text-zinc-400"
+                  />
+                  {uploading && <Description>Uploading...</Description>}
+                  <Description>Or select from existing:</Description>
+                  <Select
+                    name="featuredImageId"
+                    value={formData.featuredImageId}
+                    onChange={(e) => setFormData({ ...formData, featuredImageId: e.target.value })}
+                  >
+                    <option value="">No Image</option>
+                    {files.map((file) => (
+                      <option key={file.id} value={file.id}>
+                        {file.name}
+                      </option>
+                    ))}
+                  </Select>
                 </div>
-                <div className="text-xs text-gray-500">Or select from existing:</div>
-                <select
-                  className="block w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-md text-sm"
-                  value={formData.featuredImageId}
-                  onChange={(e) => setFormData({ ...formData, featuredImageId: e.target.value })}
-                >
-                  <option value="">No Image</option>
-                  {files.map((file) => (
-                    <option key={file.id} value={file.id}>
-                      {file.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            </div>
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="published"
-                className="h-4 w-4 text-blue-600 border-gray-300 rounded"
-                checked={formData.published}
-                onChange={(e) => setFormData({ ...formData, published: e.target.checked })}
-              />
-              <label htmlFor="published" className="ml-2 block text-sm text-gray-900">
-                Published
-              </label>
-            </div>
-            <div className="flex gap-2">
-              <button
-                type="submit"
-                className="px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800"
-              >
+              </Field>
+              <CheckboxField>
+                <Checkbox
+                  name="published"
+                  checked={formData.published}
+                  onChange={(checked) => setFormData({ ...formData, published: checked })}
+                />
+                <Label>Published</Label>
+              </CheckboxField>
+            </FieldGroup>
+            <div className="mt-8 flex gap-4">
+              <Button type="submit">
                 {editingPost ? 'Update Post' : 'Create Post'}
-              </button>
-              <button
-                type="button"
-                onClick={resetForm}
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
-              >
+              </Button>
+              <Button type="button" plain onClick={resetForm}>
                 Cancel
-              </button>
+              </Button>
             </div>
-          </form>
-        </div>
+          </Fieldset>
+        </form>
       )}
 
-      <div className="bg-white shadow rounded-lg overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Slug</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {posts.map((post) => (
-              <tr key={post.id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {post.title}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {post.slug}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <span
-                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      post.published
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-gray-100 text-gray-800'
-                    }`}
-                  >
-                    {post.published ? 'Published' : 'Draft'}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                  <button
-                    onClick={() => handleEdit(post)}
-                    className="text-blue-600 hover:text-blue-900"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(post.id)}
-                    className="text-red-600 hover:text-red-900"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {!showForm && (
+        <Table>
+        <TableHead>
+          <TableRow>
+            <TableHeader>Title</TableHeader>
+            <TableHeader>Slug</TableHeader>
+            <TableHeader>Status</TableHeader>
+            <TableHeader></TableHeader>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {posts.map((post) => (
+            <TableRow key={post.id}>
+              <TableCell className="font-medium">{post.title}</TableCell>
+              <TableCell className="text-zinc-500">{post.slug}</TableCell>
+              <TableCell>
+                <Badge color={post.published ? 'green' : 'zinc'}>
+                  {post.published ? 'Published' : 'Draft'}
+                </Badge>
+              </TableCell>
+              <TableCell>
+                <div className="-mx-3 -my-1.5 sm:-mx-2.5">
+                  <Dropdown>
+                    <DropdownButton plain aria-label="More options">
+                      <EllipsisVerticalIcon />
+                    </DropdownButton>
+                    <DropdownMenu anchor="bottom end">
+                      <DropdownItem onClick={() => handleEdit(post)}>
+                        Edit
+                      </DropdownItem>
+                      <DropdownItem onClick={() => handleDelete(post.id)}>
+                        Delete
+                      </DropdownItem>
+                    </DropdownMenu>
+                  </Dropdown>
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      )}
     </div>
   );
 }

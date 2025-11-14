@@ -1,6 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { Heading } from '@/components/catalyst/heading';
+import { Button } from '@/components/catalyst/button';
+import { Select } from '@/components/catalyst/select';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/catalyst/table';
+import { Fieldset, Legend, FieldGroup, Field, Label, Description } from '@/components/catalyst/fieldset';
+import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from '@/components/catalyst/dropdown';
+import { EllipsisVerticalIcon } from '@heroicons/react/16/solid';
 
 interface Category {
   id: string;
@@ -21,15 +29,13 @@ interface File {
 }
 
 export default function FilesPage() {
+  const router = useRouter();
   const [files, setFiles] = useState<File[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [uploading, setUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<globalThis.File | null>(null);
   const [selectedCategory, setSelectedCategory] = useState('');
-  const [editingFile, setEditingFile] = useState<File | null>(null);
-  const [location, setLocation] = useState('');
-  const [capturedAt, setCapturedAt] = useState('');
 
   useEffect(() => {
     fetchFiles();
@@ -133,85 +139,90 @@ export default function FilesPage() {
 
   return (
     <div className="px-4 sm:px-0">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Files</h2>
+      <Heading>Files</Heading>
 
-      <div className="bg-white shadow rounded-lg p-6 mb-6">
-        <h3 className="text-lg font-medium text-gray-900 mb-4">Upload File</h3>
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Select File</label>
-            <input
-              type="file"
-              onChange={handleFileSelect}
-              className="mt-1 block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-700">Category (Optional)</label>
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+      <div className="mt-6 border-2 border-dashed border-zinc-300 dark:border-zinc-700 rounded-lg p-8 bg-zinc-50 dark:bg-zinc-900/50">
+        <Fieldset>
+          <Legend>Upload File</Legend>
+          <FieldGroup>
+            <Field>
+              <Label>Select File</Label>
+              <input
+                type="file"
+                onChange={handleFileSelect}
+                className="block w-full text-sm text-zinc-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-zinc-900 file:text-white hover:file:bg-zinc-800 file:cursor-pointer dark:text-zinc-400"
+              />
+            </Field>
+            <Field>
+              <Label>Category</Label>
+              <Select
+                name="category"
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+              >
+                <option value="">No Category</option>
+                {categories.map((cat) => (
+                  <option key={cat.id} value={cat.id}>
+                    {cat.name}
+                  </option>
+                ))}
+              </Select>
+              <Description>Optional - assign file to a category</Description>
+            </Field>
+          </FieldGroup>
+          <div className="mt-8">
+            <Button
+              onClick={handleUpload}
+              disabled={!selectedFile || uploading}
             >
-              <option value="">No Category</option>
-              {categories.map((cat) => (
-                <option key={cat.id} value={cat.id}>
-                  {cat.name}
-                </option>
-              ))}
-            </select>
+              {uploading ? 'Uploading...' : 'Upload File'}
+            </Button>
           </div>
-          <button
-            onClick={handleUpload}
-            disabled={!selectedFile || uploading}
-            className="px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800 disabled:opacity-50"
-          >
-            {uploading ? 'Uploading...' : 'Upload File'}
-          </button>
-        </div>
+        </Fieldset>
       </div>
 
-      <div className="bg-white shadow rounded-lg overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Category</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Size</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Type</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {files.map((file) => (
-              <tr key={file.id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  <a href={file.url} target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:text-blue-900">
-                    {file.name}
-                  </a>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {file.category?.name || '-'}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {file.size ? `${(parseInt(file.size) / 1024).toFixed(2)} KB` : '-'}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {file.mimeType || '-'}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                  <button
-                    onClick={() => handleDelete(file.id)}
-                    className="text-red-600 hover:text-red-900"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      <Table className="mt-8">
+        <TableHead>
+          <TableRow>
+            <TableHeader>Name</TableHeader>
+            <TableHeader>Category</TableHeader>
+            <TableHeader>Size</TableHeader>
+            <TableHeader>Actions</TableHeader>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {files.map((file) => (
+            <TableRow key={file.id}>
+              <TableCell className="font-medium">
+                {file.name}
+              </TableCell>
+              <TableCell>
+                {file.category?.name || '-'}
+              </TableCell>
+              <TableCell>
+                {file.size ? `${(parseInt(file.size) / 1024).toFixed(2)} KB` : '-'}
+              </TableCell>
+              <TableCell>
+                <div className="-mx-3 -my-1.5 sm:-mx-2.5">
+                  <Dropdown>
+                    <DropdownButton plain aria-label="More options">
+                      <EllipsisVerticalIcon />
+                    </DropdownButton>
+                    <DropdownMenu anchor="bottom end">
+                      <DropdownItem onClick={() => router.push(`/admin/dashboard/files/${file.id}`)}>
+                        Edit
+                      </DropdownItem>
+                      <DropdownItem onClick={() => handleDelete(file.id)}>
+                        Delete
+                      </DropdownItem>
+                    </DropdownMenu>
+                  </Dropdown>
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
     </div>
   );
 }

@@ -1,6 +1,17 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Heading, Subheading } from '@/components/catalyst/heading';
+import { Button } from '@/components/catalyst/button';
+import { Input } from '@/components/catalyst/input';
+import { Select } from '@/components/catalyst/select';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/catalyst/table';
+import { Badge } from '@/components/catalyst/badge';
+import { Fieldset, Legend, FieldGroup, Field, Label, Description } from '@/components/catalyst/fieldset';
+import { Textarea } from '@/components/catalyst/textarea';
+import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from '@/components/catalyst/dropdown';
+import { Checkbox, CheckboxField, CheckboxGroup } from '@/components/catalyst/checkbox';
+import { EllipsisVerticalIcon } from '@heroicons/react/16/solid';
 
 interface File {
   id: string;
@@ -148,58 +159,56 @@ export default function PagesManagement() {
   }
 
   return (
-    <div className="px-4 sm:px-0">
+    <div>
       <div className="flex justify-between items-center mb-6">
-        <h2 className="text-2xl font-bold text-gray-900">Pages</h2>
-        <button
-          onClick={() => {
-            resetForm();
-            setShowForm(!showForm);
-          }}
-          className="px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800"
-        >
-          {showForm ? 'Cancel' : 'Add Page'}
-        </button>
+        <Heading>Pages</Heading>
+        {!showForm && (
+          <Button
+            onClick={() => {
+              resetForm();
+              setShowForm(true);
+            }}
+          >
+            Add Page
+          </Button>
+        )}
       </div>
 
       {showForm && (
-        <div className="bg-white shadow rounded-lg p-6 mb-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">
-            {editingPage ? 'Edit Page' : 'Create Page'}
-          </h3>
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Title</label>
-              <input
-                type="text"
-                required
-                className="mt-1 block w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-md"
-                value={formData.title}
-                onChange={(e) => setFormData({ ...formData, title: e.target.value })}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Slug</label>
-              <input
-                type="text"
-                className="mt-1 block w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-md"
-                value={formData.slug}
-                onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                placeholder="Leave blank to auto-generate from title"
-              />
-              <p className="mt-1 text-xs text-gray-500">URL-friendly version of the title</p>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Page Type</label>
-              <select
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-                value={formData.pageType}
-                onChange={(e) => setFormData({ ...formData, pageType: e.target.value })}
-              >
-                <option value="standard">Standard Page</option>
-                <option value="home">Home Page</option>
-              </select>
-            </div>
+        <form onSubmit={handleSubmit} className="mt-6">
+          <Fieldset>
+            <Legend>{editingPage ? 'Edit Page' : 'Create Page'}</Legend>
+            <FieldGroup>
+              <Field>
+                <Label>Title</Label>
+                <Input
+                  name="title"
+                  required
+                  value={formData.title}
+                  onChange={(e) => setFormData({ ...formData, title: e.target.value })}
+                />
+              </Field>
+              <Field>
+                <Label>Slug</Label>
+                <Input
+                  name="slug"
+                  value={formData.slug}
+                  onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                  placeholder="Leave blank to auto-generate from title"
+                />
+                <Description>URL-friendly version of the title</Description>
+              </Field>
+              <Field>
+                <Label>Page Type</Label>
+                <Select
+                  name="pageType"
+                  value={formData.pageType}
+                  onChange={(e) => setFormData({ ...formData, pageType: e.target.value })}
+                >
+                  <option value="standard">Standard Page</option>
+                  <option value="home">Home Page</option>
+                </Select>
+              </Field>
             {formData.pageType === 'home' && (
               <div className="bg-gray-50 p-4 rounded-md space-y-3">
                 <p className="text-xs font-medium text-gray-700">Home Page Settings</p>
@@ -230,110 +239,93 @@ export default function PagesManagement() {
                 )}
               </div>
             )}
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Content</label>
-              <textarea
-                rows={4}
-                className="mt-1 block w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-md"
-                value={formData.content}
-                onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700">Featured Image</label>
-              <select
-                className="mt-1 block w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-md"
-                value={formData.featuredImageId}
-                onChange={(e) => setFormData({ ...formData, featuredImageId: e.target.value })}
-              >
-                <option value="">No Image</option>
-                {files.map((file) => (
-                  <option key={file.id} value={file.id}>
-                    {file.name}
-                  </option>
-                ))}
-              </select>
-            </div>
-            <div className="flex items-center">
-              <input
-                type="checkbox"
-                id="published"
-                className="h-4 w-4 text-blue-600 border-gray-300 rounded"
-                checked={formData.published}
-                onChange={(e) => setFormData({ ...formData, published: e.target.checked })}
-              />
-              <label htmlFor="published" className="ml-2 block text-sm text-gray-900">
-                Published
-              </label>
-            </div>
-            <div className="flex gap-2">
-              <button
-                type="submit"
-                className="px-4 py-2 bg-gray-900 text-white rounded-md hover:bg-gray-800"
-              >
+              <Field>
+                <Label>Content</Label>
+                <Textarea
+                  name="content"
+                  rows={4}
+                  value={formData.content}
+                  onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                />
+              </Field>
+              <Field>
+                <Label>Featured Image</Label>
+                <Select
+                  name="featuredImageId"
+                  value={formData.featuredImageId}
+                  onChange={(e) => setFormData({ ...formData, featuredImageId: e.target.value })}
+                >
+                  <option value="">No Image</option>
+                  {files.map((file) => (
+                    <option key={file.id} value={file.id}>
+                      {file.name}
+                    </option>
+                  ))}
+                </Select>
+              </Field>
+              <CheckboxField>
+                <Checkbox
+                  name="published"
+                  checked={formData.published}
+                  onChange={(checked) => setFormData({ ...formData, published: checked })}
+                />
+                <Label>Published</Label>
+              </CheckboxField>
+            </FieldGroup>
+            <div className="mt-8 flex gap-4">
+              <Button type="submit">
                 {editingPage ? 'Update Page' : 'Create Page'}
-              </button>
-              <button
-                type="button"
-                onClick={resetForm}
-                className="px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-300"
-              >
+              </Button>
+              <Button type="button" plain onClick={resetForm}>
                 Cancel
-              </button>
+              </Button>
             </div>
-          </form>
-        </div>
+          </Fieldset>
+        </form>
       )}
 
-      <div className="bg-white shadow rounded-lg overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Title</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Slug</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Status</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
-            {pages.map((page) => (
-              <tr key={page.id}>
-                <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                  {page.title}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  {page.slug}
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                  <span
-                    className={`px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${
-                      page.published
-                        ? 'bg-green-100 text-green-800'
-                        : 'bg-gray-100 text-gray-800'
-                    }`}
-                  >
-                    {page.published ? 'Published' : 'Draft'}
-                  </span>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
-                  <button
-                    onClick={() => handleEdit(page)}
-                    className="text-blue-600 hover:text-blue-900"
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDelete(page.id)}
-                    className="text-red-600 hover:text-red-900"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+      {!showForm && (
+        <Table>
+        <TableHead>
+          <TableRow>
+            <TableHeader>Title</TableHeader>
+            <TableHeader>Slug</TableHeader>
+            <TableHeader>Status</TableHeader>
+            <TableHeader></TableHeader>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          {pages.map((page) => (
+            <TableRow key={page.id}>
+              <TableCell className="font-medium">{page.title}</TableCell>
+              <TableCell className="text-zinc-500">{page.slug}</TableCell>
+              <TableCell>
+                <Badge color={page.published ? 'green' : 'zinc'}>
+                  {page.published ? 'Published' : 'Draft'}
+                </Badge>
+              </TableCell>
+              <TableCell>
+                <div className="-mx-3 -my-1.5 sm:-mx-2.5">
+                  <Dropdown>
+                    <DropdownButton plain aria-label="More options">
+                      <EllipsisVerticalIcon />
+                    </DropdownButton>
+                    <DropdownMenu anchor="bottom end">
+                      <DropdownItem onClick={() => handleEdit(page)}>
+                        Edit
+                      </DropdownItem>
+                      <DropdownItem onClick={() => handleDelete(page.id)}>
+                        Delete
+                      </DropdownItem>
+                    </DropdownMenu>
+                  </Dropdown>
+                </div>
+              </TableCell>
+            </TableRow>
+          ))}
+        </TableBody>
+      </Table>
+      )}
     </div>
   );
 }

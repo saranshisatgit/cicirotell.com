@@ -1,6 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { Heading } from '@/components/catalyst/heading';
+import { Button } from '@/components/catalyst/button';
+import { Input } from '@/components/catalyst/input';
+import { Textarea } from '@/components/catalyst/textarea';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/catalyst/table';
+import { Fieldset, Legend, FieldGroup, Field, Label, Description } from '@/components/catalyst/fieldset';
+import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from '@/components/catalyst/dropdown';
+import { EllipsisVerticalIcon } from '@heroicons/react/16/solid';
 
 interface Category {
   id: string;
@@ -80,94 +88,92 @@ export default function CategoriesPage() {
 
   return (
     <div className="px-4 sm:px-0">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-medium text-gray-900">Categories</h2>
-        <button
-          onClick={() => setShowForm(!showForm)}
-          className="px-3 py-1.5 text-xs bg-gray-900 text-white rounded-md hover:bg-gray-800 transition-colors"
-        >
-          {showForm ? 'Cancel' : 'Add Category'}
-        </button>
+      <div className="flex justify-between items-center mb-6">
+        <Heading>Categories</Heading>
+        {!showForm && (
+          <Button onClick={() => setShowForm(true)}>
+            Add Category
+          </Button>
+        )}
       </div>
 
       {showForm && (
-        <div className="bg-white shadow-sm rounded-lg p-4 mb-4">
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">Name</label>
-              <input
-                type="text"
-                required
-                className="block w-full px-3 py-1.5 text-sm text-gray-900 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-400"
-                value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-              />
+        <form onSubmit={handleSubmit} className="mt-6">
+          <Fieldset>
+            <Legend>Create Category</Legend>
+            <FieldGroup>
+              <Field>
+                <Label>Name</Label>
+                <Input
+                  name="name"
+                  required
+                  value={formData.name}
+                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                />
+              </Field>
+              <Field>
+                <Label>Slug</Label>
+                <Input
+                  name="slug"
+                  value={formData.slug}
+                  onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                  placeholder="Leave blank to auto-generate"
+                />
+                <Description>URL-friendly version</Description>
+              </Field>
+              <Field>
+                <Label>Description</Label>
+                <Textarea
+                  name="description"
+                  rows={2}
+                  value={formData.description}
+                  onChange={(e) => setFormData({ ...formData, description: e.target.value })}
+                />
+              </Field>
+            </FieldGroup>
+            <div className="mt-8 flex gap-4">
+              <Button type="submit">Create Category</Button>
+              <Button type="button" plain onClick={() => setShowForm(false)}>Cancel</Button>
             </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">Slug</label>
-              <input
-                type="text"
-                className="block w-full px-3 py-1.5 text-sm text-gray-900 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-400"
-                value={formData.slug}
-                onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
-                placeholder="Leave blank to auto-generate"
-              />
-              <p className="mt-1 text-xs text-gray-500">URL-friendly version</p>
-            </div>
-            <div>
-              <label className="block text-xs font-medium text-gray-700 mb-1">Description</label>
-              <textarea
-                className="block w-full px-3 py-1.5 text-sm text-gray-900 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-400"
-                rows={2}
-                value={formData.description}
-                onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-              />
-            </div>
-            <button
-              type="submit"
-              className="px-3 py-1.5 text-xs bg-gray-900 text-white rounded-md hover:bg-gray-800 transition-colors"
-            >
-              Create Category
-            </button>
-          </form>
-        </div>
+          </Fieldset>
+        </form>
       )}
 
-      <div className="bg-white shadow-sm rounded-lg overflow-hidden">
-        <table className="min-w-full divide-y divide-gray-200">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Slug</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Description</th>
-              <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="bg-white divide-y divide-gray-200">
+      {!showForm && (
+        <Table>
+        <TableHead>
+          <TableRow>
+            <TableHeader>Name</TableHeader>
+            <TableHeader>Slug</TableHeader>
+            <TableHeader>Description</TableHeader>
+            <TableHeader></TableHeader>
+          </TableRow>
+        </TableHead>
+        <TableBody>
             {categories.map((category) => (
-              <tr key={category.id}>
-                <td className="px-4 py-3 whitespace-nowrap text-xs font-medium text-gray-900">
-                  {category.name}
-                </td>
-                <td className="px-4 py-3 whitespace-nowrap text-xs text-gray-500">
-                  {category.slug}
-                </td>
-                <td className="px-4 py-3 text-xs text-gray-500">
-                  {category.description || '-'}
-                </td>
-                <td className="px-4 py-3 whitespace-nowrap text-right text-xs font-medium">
-                  <button
-                    onClick={() => handleDelete(category.id)}
-                    className="text-red-600 hover:text-red-900 transition-colors"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
+              <TableRow key={category.id}>
+                <TableCell className="font-medium">{category.name}</TableCell>
+                <TableCell className="text-zinc-500">{category.slug}</TableCell>
+                <TableCell className="text-zinc-500">{category.description || '-'}</TableCell>
+                <TableCell>
+                  <div className="-mx-3 -my-1.5 sm:-mx-2.5">
+                    <Dropdown>
+                      <DropdownButton plain aria-label="More options">
+                        <EllipsisVerticalIcon />
+                      </DropdownButton>
+                      <DropdownMenu anchor="bottom end">
+                        <DropdownItem onClick={() => handleDelete(category.id)}>
+                          Delete
+                        </DropdownItem>
+                      </DropdownMenu>
+                    </Dropdown>
+                  </div>
+                </TableCell>
+              </TableRow>
             ))}
-          </tbody>
-        </table>
-      </div>
+        </TableBody>
+      </Table>
+      )}
     </div>
   );
 }

@@ -4,6 +4,8 @@ import { useEffect, useState } from 'react';
 import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
+import { Dialog, DialogPanel, DialogBackdrop } from '@headlessui/react';
+import { XMarkIcon, ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
 
 interface CategoryFile {
   id: string;
@@ -31,6 +33,8 @@ export default function CategoryPage() {
   const [categoryData, setCategoryData] = useState<CategoryData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [selectedImageIndex, setSelectedImageIndex] = useState<number | null>(null);
+  const [imageDimensions, setImageDimensions] = useState<{ width: number; height: number } | null>(null);
 
   useEffect(() => {
     fetchCategory();
@@ -54,6 +58,34 @@ export default function CategoryPage() {
       setError(true);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const openImage = (index: number) => {
+    setSelectedImageIndex(index);
+    if (categoryData?.files[index]) {
+      const img = document.createElement('img');
+      img.onload = () => {
+        setImageDimensions({ width: img.naturalWidth, height: img.naturalHeight });
+      };
+      img.src = categoryData.files[index].url;
+    }
+  };
+
+  const closeImage = () => {
+    setSelectedImageIndex(null);
+    setImageDimensions(null);
+  };
+
+  const goToPrevious = () => {
+    if (selectedImageIndex !== null && selectedImageIndex > 0) {
+      openImage(selectedImageIndex - 1);
+    }
+  };
+
+  const goToNext = () => {
+    if (selectedImageIndex !== null && categoryData && selectedImageIndex < categoryData.files.length - 1) {
+      openImage(selectedImageIndex + 1);
     }
   };
 
@@ -99,12 +131,13 @@ export default function CategoryPage() {
       {categoryData.files.length > 0 ? (
         <div className="container mx-auto px-6 py-12">
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-            {categoryData.files.map((file) => {
+            {categoryData.files.map((file, index) => {
               console.log('Rendering image:', file.url, 'Name:', file.name);
               return (
                 <div
                   key={file.id}
-                  className="group relative aspect-square overflow-hidden rounded-lg shadow-sm hover:shadow-xl transition-all duration-300"
+                  onClick={() => openImage(index)}
+                  className="group relative aspect-square overflow-hidden rounded-lg shadow-sm hover:shadow-xl transition-all duration-300 cursor-pointer"
                 >
                   <Image
                     src={file.url}
@@ -142,6 +175,82 @@ export default function CategoryPage() {
           </p>
         </div>
       </footer>
+
+      {/* Image Dialog */}
+      {selectedImageIndex !== null && categoryData && (
+        <Dialog open={true} onClose={closeImage} className="relative z-50">
+          <DialogBackdrop className="fixed inset-0 bg-black/90" />
+          
+          <div className="fixed inset-0 flex items-center justify-center p-4">
+            <DialogPanel className="relative w-full h-full flex items-center justify-center">
+              {/* Close Button */}
+              <button
+                onClick={closeImage}
+                className="absolute top-4 right-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                aria-label="Close"
+              >
+                <XMarkIcon className="h-6 w-6 text-white" />
+              </button>
+
+              {/* Previous Button */}
+              {selectedImageIndex > 0 && (
+                <button
+                  onClick={goToPrevious}
+                  className="absolute left-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                  aria-label="Previous image"
+                >
+                  <ChevronLeftIcon className="h-8 w-8 text-white" />
+                </button>
+              )}
+
+              {/* Next Button */}
+              {selectedImageIndex < categoryData.files.length - 1 && (
+                <button
+                  onClick={goToNext}
+                  className="absolute right-4 z-10 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors"
+                  aria-label="Next image"
+                >
+                  <ChevronRightIcon className="h-8 w-8 text-white" />
+                </button>
+              )}
+
+              {/* Image Container */}
+              <div className="relative max-w-7xl max-h-[90vh] w-full h-full flex flex-col items-center justify-center">
+                <div className="relative w-full h-full flex items-center justify-center">
+                  <Image
+                    src={categoryData.files[selectedImageIndex].url}
+                    alt={categoryData.files[selectedImageIndex].name}
+                    width={imageDimensions?.width || 1200}
+                    height={imageDimensions?.height || 800}
+                    className="max-w-full max-h-[80vh] object-contain"
+                    priority
+                  />
+                </div>
+                
+                {/* Image Info */}
+                <div className="mt-4 text-center">
+                  <p className="text-sm text-white/80">
+                    {categoryData.files[selectedImageIndex].name}
+                  </p>
+                  {imageDimensions && (
+                    <p className="text-xs text-white/60 mt-1">
+                      Original: {imageDimensions.width} × {imageDimensions.height}px
+                      {(imageDimensions.width > 1400 || imageDimensions.height > 900) && (
+                        <span className="block mt-1 text-amber-400">
+                          ⚠️ Image scaled to fit screen
+                        </span>
+                      )}
+                    </p>
+                  )}
+                  <p className="text-xs text-white/60 mt-1">
+                    {selectedImageIndex + 1} / {categoryData.files.length}
+                  </p>
+                </div>
+              </div>
+            </DialogPanel>
+          </div>
+        </Dialog>
+      )}
     </div>
   );
 }

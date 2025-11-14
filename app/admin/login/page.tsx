@@ -3,6 +3,10 @@
 import { signIn } from 'next-auth/react';
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { Heading } from '@/components/catalyst/heading';
+import { Button } from '@/components/catalyst/button';
+import { Input } from '@/components/catalyst/input';
+import { Field, Label, ErrorMessage } from '@/components/catalyst/fieldset';
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
@@ -36,58 +40,52 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
-      <div className="max-w-sm w-full p-6 bg-white rounded-lg shadow-sm">
-        <div className="mb-6">
-          <h2 className="text-center text-xl font-medium text-gray-900">
-            Admin Login
-          </h2>
+    <div className="flex min-h-screen items-center justify-center bg-zinc-50 px-4 dark:bg-zinc-950">
+      <div className="w-full max-w-sm">
+        <div className="mb-8 text-center">
+          <Heading>Sign in to your account</Heading>
+          <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
+            Manage your photography portfolio
+          </p>
         </div>
-        <form className="space-y-4" onSubmit={handleSubmit}>
-          {error && (
-            <div className="bg-red-50 border border-red-200 text-red-600 px-3 py-2 rounded text-sm">
-              {error}
-            </div>
-          )}
-          <div className="space-y-3">
-            <div>
-              <label htmlFor="email" className="block text-xs font-medium text-gray-700 mb-1">
-                Email
-              </label>
-              <input
-                id="email"
-                name="email"
+
+        <div className="rounded-lg bg-white p-8 shadow-sm ring-1 ring-zinc-950/5 dark:bg-zinc-900 dark:ring-white/10">
+          <form onSubmit={handleSubmit} className="space-y-6">
+            {error && (
+              <ErrorMessage className="rounded-md bg-red-50 px-4 py-3 text-sm text-red-600 dark:bg-red-950/50 dark:text-red-400">
+                {error}
+              </ErrorMessage>
+            )}
+
+            <Field>
+              <Label>Email address</Label>
+              <Input
                 type="email"
+                name="email"
                 autoComplete="email"
                 required
-                className="block w-full px-3 py-1.5 text-sm text-gray-900 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
-            </div>
-            <div>
-              <label htmlFor="password" className="block text-xs font-medium text-gray-700 mb-1">
-                Password
-              </label>
-              <input
-                id="password"
-                name="password"
+            </Field>
+
+            <Field>
+              <Label>Password</Label>
+              <Input
                 type="password"
+                name="password"
+                autoComplete="current-password"
                 required
-                className="block w-full px-3 py-1.5 text-sm text-gray-900 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-400 focus:border-gray-400"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
               />
-            </div>
-          </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full flex justify-center py-1.5 px-4 border border-transparent rounded-md text-sm font-medium text-white bg-gray-900 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500 disabled:opacity-50 transition-colors"
-          >
-            {loading ? 'Signing in...' : 'Sign in'}
-          </button>
-        </form>
+            </Field>
+
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? 'Signing in...' : 'Sign in'}
+            </Button>
+          </form>
+        </div>
       </div>
     </div>
   );

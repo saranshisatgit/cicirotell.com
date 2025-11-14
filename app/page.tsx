@@ -81,11 +81,11 @@ export default function Home() {
   return (
     <div className="min-h-screen bg-white dark:bg-black">
       {/* Menu Bar */}
-      {(homeData.page.showInMenu && homeData.menuPages.length > 0) || true && (
+      {(homeData.menuPages.length > 0 || true) && (
         <div className="border-b border-gray-100 dark:border-gray-800">
           <nav className="container mx-auto px-6 py-6">
             <div className="flex justify-center gap-8">
-              {homeData.page.showInMenu && homeData.menuPages.map((page) => (
+              {homeData.menuPages.map((page) => (
                 <Link
                   key={page.id}
                   href={`/pages/${page.slug}`}

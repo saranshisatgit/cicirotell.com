@@ -59,35 +59,35 @@ export default function DashboardPage() {
 
   return (
     <div className="px-4 sm:px-0">
-      <h2 className="text-2xl font-light text-gray-900 mb-6">Overview</h2>
+      <h2 className="text-2xl font-light text-zinc-900 dark:text-white mb-6">Overview</h2>
       {/* Stats */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3 mb-8">
-        <div className="bg-white overflow-hidden shadow rounded-lg p-6">
-          <div className="text-sm font-light text-gray-500">Categories</div>
-          <div className="mt-2 text-3xl font-light text-gray-900">{stats.categories}</div>
+        <div className="overflow-hidden shadow rounded-lg p-6 ring-1 ring-zinc-950/5 dark:ring-white/10">
+          <div className="text-sm font-light text-zinc-500 dark:text-zinc-400">Categories</div>
+          <div className="mt-2 text-3xl font-light text-zinc-900 dark:text-white">{stats.categories}</div>
         </div>
-        <div className="bg-white overflow-hidden shadow rounded-lg p-6">
-          <div className="text-sm font-light text-gray-500">Total Files</div>
-          <div className="mt-2 text-3xl font-light text-gray-900">{stats.files}</div>
+        <div className="overflow-hidden shadow rounded-lg p-6 ring-1 ring-zinc-950/5 dark:ring-white/10">
+          <div className="text-sm font-light text-zinc-500 dark:text-zinc-400">Total Files</div>
+          <div className="mt-2 text-3xl font-light text-zinc-900 dark:text-white">{stats.files}</div>
         </div>
-        <div className="bg-white overflow-hidden shadow rounded-lg p-6">
-          <div className="text-sm font-light text-gray-500">Blog Posts</div>
-          <div className="mt-2 text-3xl font-light text-gray-900">{stats.blogs}</div>
+        <div className="overflow-hidden shadow rounded-lg p-6 ring-1 ring-zinc-950/5 dark:ring-white/10">
+          <div className="text-sm font-light text-zinc-500 dark:text-zinc-400">Blog Posts</div>
+          <div className="mt-2 text-3xl font-light text-zinc-900 dark:text-white">{stats.blogs}</div>
         </div>
       </div>
 
       {/* Recent Files */}
       {recentFiles.length > 0 && (
-        <div className="bg-white shadow rounded-lg p-6">
+        <div className="shadow rounded-lg p-6 ring-1 ring-zinc-950/5 dark:ring-white/10">
           <div className="flex items-center justify-between mb-4">
-            <h3 className="text-lg font-light text-gray-900">Recent Files</h3>
-            <Link href="/admin/dashboard/files" className="text-sm text-gray-600 hover:text-gray-900">
+            <h3 className="text-lg font-light text-zinc-900 dark:text-white">Recent Files</h3>
+            <Link href="/admin/dashboard/files" className="text-sm text-zinc-600 hover:text-zinc-900 dark:text-zinc-400 dark:hover:text-white">
               See more →
             </Link>
           </div>
           <div className="grid grid-cols-3 gap-4">
             {recentFiles.map((file) => (
-              <div key={file.id} className="relative aspect-square rounded-lg overflow-hidden bg-gray-100">
+              <div key={file.id} className="relative aspect-square rounded-lg overflow-hidden bg-zinc-100 dark:bg-zinc-800">
                 <Image
                   src={file.url}
                   alt={file.name}
