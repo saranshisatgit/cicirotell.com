@@ -32,6 +32,9 @@ export const files = pgTable('files', {
   size: text('size'), // File size in bytes
   mimeType: text('mime_type'),
   uploadedBy: uuid('uploaded_by').references(() => users.id),
+  location: text('location'), // Photo location
+  capturedAt: timestamp('captured_at'), // When photo was taken
+  metadata: text('metadata'), // JSON string for EXIF data
   createdAt: timestamp('created_at').defaultNow().notNull(),
 });
 

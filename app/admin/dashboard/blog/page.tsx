@@ -24,6 +24,7 @@ export default function BlogManagement() {
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingPost, setEditingPost] = useState<BlogPost | null>(null);
+  const [uploading, setUploading] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     slug: '',
@@ -134,6 +135,56 @@ export default function BlogManagement() {
     setShowForm(false);
   };
 
+  const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setUploading(true);
+    try {
+      // Get presigned URL
+      const presignedRes = await fetch('/api/upload/presigned-url', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          fileName: file.name,
+          fileType: file.type,
+        }),
+      });
+
+      const { url, key } = await presignedRes.json();
+
+      // Upload to R2
+      await fetch(url, {
+        method: 'PUT',
+        body: file,
+        headers: {
+          'Content-Type': file.type,
+        },
+      });
+
+      // Save file metadata
+      const fileRes = await fetch('/api/admin/files', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: file.name,
+          key,
+          size: file.size.toString(),
+          mimeType: file.type,
+        }),
+      });
+
+      const newFile = await fileRes.json();
+      setFormData({ ...formData, featuredImageId: newFile.id });
+      fetchFiles();
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      alert('Failed to upload file');
+    } finally {
+      setUploading(false);
+    }
+  };
+
   if (loading) {
     return <div className="text-center py-8">Loading...</div>;
   }
@@ -173,11 +224,12 @@ export default function BlogManagement() {
               <label className="block text-sm font-medium text-gray-700">Slug</label>
               <input
                 type="text"
-                required
                 className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
                 value={formData.slug}
                 onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
+                placeholder="Leave blank to auto-generate"
               />
+              <p className="mt-1 text-xs text-gray-500">URL-friendly version</p>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700">Excerpt</label>
@@ -189,28 +241,48 @@ export default function BlogManagement() {
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Content</label>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Content (Markdown supported)</label>
               <textarea
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-                rows={8}
+                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md font-mono text-sm"
+                rows={12}
                 value={formData.content}
                 onChange={(e) => setFormData({ ...formData, content: e.target.value })}
+                placeholder="Write your blog post content here. You can use markdown formatting..."
               />
+              <p className="mt-1 text-xs text-gray-500">
+                Supports: **bold**, *italic*, # headings, - lists, [links](url), ![images](url)
+              </p>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700">Featured Image</label>
-              <select
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-                value={formData.featuredImageId}
-                onChange={(e) => setFormData({ ...formData, featuredImageId: e.target.value })}
-              >
-                <option value="">No Image</option>
-                {files.map((file) => (
-                  <option key={file.id} value={file.id}>
-                    {file.name}
-                  </option>
-                ))}
-              </select>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Featured Image</label>
+              <div className="space-y-3">
+                <div>
+                  <label className="block">
+                    <span className="sr-only">Choose file</span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileUpload}
+                      disabled={uploading}
+                      className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-medium file:bg-gray-900 file:text-white hover:file:bg-gray-800 file:cursor-pointer disabled:opacity-50"
+                    />
+                  </label>
+                  {uploading && <p className="text-xs text-gray-500 mt-1">Uploading...</p>}
+                </div>
+                <div className="text-xs text-gray-500">Or select from existing:</div>
+                <select
+                  className="block w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  value={formData.featuredImageId}
+                  onChange={(e) => setFormData({ ...formData, featuredImageId: e.target.value })}
+                >
+                  <option value="">No Image</option>
+                  {files.map((file) => (
+                    <option key={file.id} value={file.id}>
+                      {file.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
             </div>
             <div className="flex items-center">
               <input

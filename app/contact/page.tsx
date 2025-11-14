@@ -46,21 +46,21 @@ export default function ContactPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
+    <div className="min-h-screen bg-white dark:bg-black">
       {/* Header */}
-      <div className="border-b border-gray-100">
+      <div className="border-b border-gray-100 dark:border-gray-800">
         <div className="container mx-auto px-6 py-8">
           <Link
             href="/"
-            className="inline-block text-xs text-gray-600 hover:text-gray-900 tracking-wider uppercase mb-4 transition-colors"
+            className="inline-block text-xs text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 tracking-wider uppercase mb-4 transition-colors"
           >
             ← Back
           </Link>
-          <h1 className="text-3xl md:text-4xl font-light text-gray-900 tracking-wide">
-            Contact
+          <h1 className="text-3xl md:text-4xl font-light text-gray-800 dark:text-gray-200 tracking-wide">
+            Get in Touch
           </h1>
-          <p className="text-sm text-gray-600 mt-2 font-light">
-            Get in touch with us
+          <p className="text-sm text-gray-600 dark:text-gray-400 mt-2 font-light">
+            Send me a message here and I will try my best to get in touch with you. Thanks!
           </p>
         </div>
       </div>
@@ -70,14 +70,14 @@ export default function ContactPage() {
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Name */}
           <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="name" className="block text-sm font-light text-gray-700 dark:text-gray-300 mb-2">
               Name *
             </label>
             <input
               type="text"
               id="name"
               required
-              className="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent transition-all"
+              className="block w-full px-4 py-3 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-600 focus:border-transparent transition-all"
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               disabled={status === 'loading'}
@@ -86,14 +86,14 @@ export default function ContactPage() {
 
           {/* Email */}
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="email" className="block text-sm font-light text-gray-700 dark:text-gray-300 mb-2">
               Email *
             </label>
             <input
               type="email"
               id="email"
               required
-              className="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent transition-all"
+              className="block w-full px-4 py-3 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-600 focus:border-transparent transition-all"
               value={formData.email}
               onChange={(e) => setFormData({ ...formData, email: e.target.value })}
               disabled={status === 'loading'}
@@ -102,13 +102,13 @@ export default function ContactPage() {
 
           {/* Subject */}
           <div>
-            <label htmlFor="subject" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="subject" className="block text-sm font-light text-gray-700 dark:text-gray-300 mb-2">
               Subject
             </label>
             <input
               type="text"
               id="subject"
-              className="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent transition-all"
+              className="block w-full px-4 py-3 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-600 focus:border-transparent transition-all"
               value={formData.subject}
               onChange={(e) => setFormData({ ...formData, subject: e.target.value })}
               disabled={status === 'loading'}
@@ -117,14 +117,14 @@ export default function ContactPage() {
 
           {/* Message */}
           <div>
-            <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="message" className="block text-sm font-light text-gray-700 dark:text-gray-300 mb-2">
               Message *
             </label>
             <textarea
               id="message"
               required
               rows={6}
-              className="block w-full px-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 focus:border-transparent transition-all resize-none"
+              className="block w-full px-4 py-3 text-gray-900 dark:text-gray-100 bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-400 dark:focus:ring-gray-600 focus:border-transparent transition-all resize-none"
               value={formData.message}
               onChange={(e) => setFormData({ ...formData, message: e.target.value })}
               disabled={status === 'loading'}
@@ -160,10 +160,10 @@ export default function ContactPage() {
       </div>
 
       {/* Footer */}
-      <footer className="border-t border-gray-100 py-8 mt-16">
+      <footer className="border-t border-gray-100 dark:border-gray-800 py-8 mt-16">
         <div className="container mx-auto px-6 text-center">
-          <p className="text-xs text-gray-400 tracking-wide">
-            © {new Date().getFullYear()}
+          <p className="text-xs text-gray-400 dark:text-gray-500 tracking-wide">
+            © {new Date().getFullYear()} Copyright Cici Rotell
           </p>
         </div>
       </footer>

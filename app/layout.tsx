@@ -14,8 +14,19 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "Cicirotell",
-  description: "Content management system",
+  title: "Cici Rotell Photography",
+  description: "Professional photography portfolio by Cici Rotell",
+  openGraph: {
+    title: "Cici Rotell Photography",
+    description: "Professional photography portfolio by Cici Rotell",
+    type: "website",
+    siteName: "Cici Rotell Photography",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Cici Rotell Photography",
+    description: "Professional photography portfolio by Cici Rotell",
+  },
 };
 
 export default function RootLayout({

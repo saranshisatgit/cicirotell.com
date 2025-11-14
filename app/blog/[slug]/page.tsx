@@ -5,12 +5,6 @@ import { useParams } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 
-interface Author {
-  id: string;
-  name: string | null;
-  email: string;
-}
-
 interface FeaturedImage {
   id: string;
   name: string;
@@ -23,9 +17,8 @@ interface BlogPost {
   slug: string;
   excerpt: string | null;
   content: string | null;
-  publishedAt: Date | null;
+  createdAt: string;
   featuredImage: FeaturedImage | null;
-  author: Author | null;
 }
 
 export default function BlogPostPage() {
@@ -59,21 +52,21 @@ export default function BlogPostPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-lg text-gray-600">Loading...</div>
+      <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center">
+        <div className="text-sm text-gray-400 dark:text-gray-500">Loading...</div>
       </div>
     );
   }
 
   if (error || !post) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-4">
+          <h1 className="text-2xl font-light text-gray-800 dark:text-gray-200 mb-4">
             Post not found
           </h1>
-          <Link href="/blog" className="text-blue-600 hover:text-blue-800">
-            ← Back to Blog
+          <Link href="/" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors">
+            ← Back to Home
           </Link>
         </div>
       </div>
@@ -81,51 +74,57 @@ export default function BlogPostPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <article className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <Link
-          href="/blog"
-          className="inline-block mb-8 text-blue-600 hover:text-blue-800"
-        >
-          ← Back to Blog
-        </Link>
+    <div className="min-h-screen bg-white dark:bg-black">
+      {/* Header with Back Button */}
+      <div className="border-b border-gray-100 dark:border-gray-800">
+        <div className="container mx-auto px-6 py-6">
+          <Link
+            href="/"
+            className="inline-block text-xs text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 tracking-wider uppercase transition-colors"
+          >
+            ← Back
+          </Link>
+        </div>
+      </div>
 
+      {/* Article */}
+      <article className="container mx-auto px-6 py-12 max-w-4xl">
+        {/* Featured Image */}
         {post.featuredImage && (
-          <div className="relative h-96 w-full mb-8 rounded-lg overflow-hidden">
+          <div className="relative h-[60vh] w-full mb-12 rounded-2xl overflow-hidden shadow-xl">
             <Image
               src={post.featuredImage.url}
               alt={post.title}
               fill
+              sizes="100vw"
               className="object-cover"
+              priority
             />
           </div>
         )}
 
-        <header className="mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+        {/* Header */}
+        <header className="mb-12">
+          <h1 className="text-4xl md:text-5xl font-light text-gray-800 dark:text-gray-200 tracking-wide mb-4">
             {post.title}
           </h1>
           {post.excerpt && (
-            <p className="text-xl text-gray-600 mb-4">{post.excerpt}</p>
+            <p className="text-lg text-gray-600 dark:text-gray-400 font-light mb-6">
+              {post.excerpt}
+            </p>
           )}
-          <div className="flex items-center gap-4 text-gray-500">
-            {post.author?.name && (
-              <span className="font-medium">By {post.author.name}</span>
-            )}
-            {post.publishedAt && (
-              <span>
-                {new Date(post.publishedAt).toLocaleDateString('en-US', {
-                  year: 'numeric',
-                  month: 'long',
-                  day: 'numeric',
-                })}
-              </span>
-            )}
+          <div className="text-xs text-gray-400 dark:text-gray-500 tracking-wide">
+            {new Date(post.createdAt).toLocaleDateString('en-US', {
+              year: 'numeric',
+              month: 'long',
+              day: 'numeric',
+            })}
           </div>
         </header>
 
-        <div className="bg-white rounded-lg shadow-md p-8">
-          <div className="prose prose-lg max-w-none">
+        {/* Content */}
+        <div className="prose prose-lg dark:prose-invert max-w-none">
+          <div className="text-gray-700 dark:text-gray-300 font-light leading-relaxed space-y-4">
             {post.content ? (
               <div
                 dangerouslySetInnerHTML={{
@@ -133,20 +132,30 @@ export default function BlogPostPage() {
                 }}
               />
             ) : (
-              <p className="text-gray-600">No content available.</p>
+              <p>No content available.</p>
             )}
           </div>
         </div>
 
-        <div className="mt-8 text-center">
+        {/* Back to Blog Link */}
+        <div className="mt-16 pt-8 border-t border-gray-100 dark:border-gray-800">
           <Link
-            href="/blog"
-            className="inline-block px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+            href="/"
+            className="inline-block text-sm text-gray-600 dark:text-gray-400 hover:text-gray-900 dark:hover:text-gray-100 tracking-wider uppercase transition-colors"
           >
-            Read More Articles
+            ← More Stories
           </Link>
         </div>
       </article>
+
+      {/* Footer */}
+      <footer className="border-t border-gray-100 dark:border-gray-800 py-8 mt-16">
+        <div className="container mx-auto px-6 text-center">
+          <p className="text-xs text-gray-400 dark:text-gray-500 tracking-wide">
+            © {new Date().getFullYear()} Copyright Cici Rotell
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }

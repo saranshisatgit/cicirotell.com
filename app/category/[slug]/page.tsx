@@ -47,7 +47,7 @@ export default function CategoryPage() {
       const data = await res.json();
       console.log('Category data received:', data);
       console.log('Number of files:', data.files?.length);
-      console.log('File URLs:', data.files?.map((f: any) => f.url));
+      console.log('File URLs:', data.files?.map((f: { url: string }) => f.url));
       setCategoryData(data);
     } catch (err) {
       console.error('Error fetching category:', err);
@@ -59,18 +59,18 @@ export default function CategoryPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 flex items-center justify-center">
-        <div className="text-sm text-gray-400">Loading...</div>
+      <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center">
+        <div className="text-sm text-gray-400 dark:text-gray-500">Loading...</div>
       </div>
     );
   }
 
   if (error || !categoryData) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50 flex items-center justify-center">
+      <div className="min-h-screen bg-white dark:bg-black flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-light text-gray-900 mb-2">Category not found</h1>
-          <Link href="/" className="text-sm text-gray-600 hover:text-gray-900 transition-colors">
+          <h1 className="text-2xl font-light text-gray-800 dark:text-gray-200 mb-2">Category not found</h1>
+          <Link href="/" className="text-sm text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 transition-colors">
             ← Back to Home
           </Link>
         </div>
@@ -79,17 +79,17 @@ export default function CategoryPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
+    <div className="min-h-screen bg-white dark:bg-black">
       {/* Header */}
-      <div className="border-b border-gray-100">
+      <div className="border-b border-gray-100 dark:border-gray-800">
         <div className="container mx-auto px-6 py-8">
           <Link
             href="/"
-            className="inline-block text-xs text-gray-600 hover:text-gray-900 tracking-wider uppercase mb-4 transition-colors"
+            className="inline-block text-xs text-gray-600 dark:text-gray-400 hover:text-gray-800 dark:hover:text-gray-200 tracking-wider uppercase mb-4 transition-colors"
           >
             ← Back
           </Link>
-          <h1 className="text-3xl md:text-4xl font-light text-gray-900 tracking-wide">
+          <h1 className="text-3xl md:text-4xl font-light text-gray-800 dark:text-gray-200 tracking-wide">
             {categoryData.category.description || categoryData.category.name}
           </h1>
         </div>
@@ -135,10 +135,10 @@ export default function CategoryPage() {
       )}
 
       {/* Footer */}
-      <footer className="border-t border-gray-100 py-8 mt-16">
+      <footer className="border-t border-gray-100 dark:border-gray-800 py-8 mt-16">
         <div className="container mx-auto px-6 text-center">
-          <p className="text-xs text-gray-400 tracking-wide">
-            © {new Date().getFullYear()}
+          <p className="text-xs text-gray-400 dark:text-gray-500 tracking-wide">
+            © {new Date().getFullYear()} Copyright Cici Rotell
           </p>
         </div>
       </footer>

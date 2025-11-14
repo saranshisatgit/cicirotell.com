@@ -79,21 +79,28 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 via-white to-gray-50">
+    <div className="min-h-screen bg-white dark:bg-black">
       {/* Menu Bar */}
-      {homeData.page.showInMenu && homeData.menuPages.length > 0 && (
-        <div className="border-b border-gray-100">
+      {(homeData.page.showInMenu && homeData.menuPages.length > 0) || true && (
+        <div className="border-b border-gray-100 dark:border-gray-800">
           <nav className="container mx-auto px-6 py-6">
             <div className="flex justify-center gap-8">
-              {homeData.menuPages.map((page) => (
+              {homeData.page.showInMenu && homeData.menuPages.map((page) => (
                 <Link
                   key={page.id}
                   href={`/pages/${page.slug}`}
-                  className="text-gray-700 text-xs font-light tracking-widest uppercase hover:text-gray-900 transition-colors"
+                  className="text-gray-600 dark:text-gray-400 text-xs font-light tracking-widest uppercase hover:text-gray-900 dark:hover:text-gray-200 transition-colors"
                 >
                   {page.title}
                 </Link>
               ))}
+              {/* Contact Link */}
+              <Link
+                href="/contact"
+                className="text-gray-600 dark:text-gray-400 text-xs font-light tracking-widest uppercase hover:text-gray-900 dark:hover:text-gray-200 transition-colors"
+              >
+                Contact
+              </Link>
             </div>
           </nav>
         </div>
@@ -112,11 +119,11 @@ export default function Home() {
               priority
             />
             
-            {/* Content Text Overlay */}
+            {/* Content Text Overlay - Bottom Left */}
             {homeData.page.content && (
-              <div className="absolute inset-0 flex items-center justify-center p-8">
-                <div className="max-w-3xl text-center">
-                  <p className="text-white text-base md:text-lg font-light leading-relaxed tracking-wide drop-shadow-lg">
+              <div className="absolute bottom-0 left-0 p-8 md:p-12">
+                <div className="max-w-2xl">
+                  <p className="text-white text-sm md:text-base font-light leading-relaxed tracking-wide drop-shadow-lg">
                     {homeData.page.content}
                   </p>
                 </div>
@@ -162,17 +169,17 @@ export default function Home() {
 
       {/* Blog Section */}
       <div className="container mx-auto px-6 py-16">
-        <h2 className="text-2xl font-light text-gray-900 tracking-wide mb-8 text-center">
+        <h2 className="text-2xl font-light text-gray-800 dark:text-gray-200 tracking-wide mb-8 text-center">
           Latest Stories
         </h2>
         <BlogList />
       </div>
 
       {/* Footer */}
-      <footer className="border-t border-gray-100 py-8">
+      <footer className="border-t border-gray-100 dark:border-gray-800 py-8">
         <div className="container mx-auto px-6 text-center">
-          <p className="text-xs text-gray-400 tracking-wide">
-            © {new Date().getFullYear()} {homeData.page.title}
+          <p className="text-xs text-gray-400 dark:text-gray-500 tracking-wide">
+            © {new Date().getFullYear()} Copyright Cici Rotell
           </p>
         </div>
       </footer>

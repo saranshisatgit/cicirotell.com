@@ -14,6 +14,9 @@ interface File {
   size: string | null;
   mimeType: string | null;
   category: Category | null;
+  location: string | null;
+  capturedAt: Date | null;
+  metadata: string | null;
   createdAt: Date;
 }
 
@@ -24,6 +27,9 @@ export default function FilesPage() {
   const [uploading, setUploading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<globalThis.File | null>(null);
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [editingFile, setEditingFile] = useState<File | null>(null);
+  const [location, setLocation] = useState('');
+  const [capturedAt, setCapturedAt] = useState('');
 
   useEffect(() => {
     fetchFiles();

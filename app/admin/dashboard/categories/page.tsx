@@ -98,7 +98,7 @@ export default function CategoriesPage() {
               <input
                 type="text"
                 required
-                className="block w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-400"
+                className="block w-full px-3 py-1.5 text-sm text-gray-900 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-400"
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               />
@@ -107,7 +107,7 @@ export default function CategoriesPage() {
               <label className="block text-xs font-medium text-gray-700 mb-1">Slug</label>
               <input
                 type="text"
-                className="block w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-400"
+                className="block w-full px-3 py-1.5 text-sm text-gray-900 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-gray-400"
                 value={formData.slug}
                 onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
                 placeholder="Leave blank to auto-generate"
