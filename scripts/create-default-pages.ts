@@ -1,3 +1,4 @@
+import 'dotenv/config';
 import { db } from '../lib/db';
 import { pages } from '../lib/db/schema';
 
@@ -9,7 +10,7 @@ async function createDefaultPages() {
       {
         title: 'Home',
         slug: 'home',
-        content: 'Welcome to our photography collection',
+        content: 'Welcome to my photography collection',
         pageType: 'home',
         showInMenu: true,
         menuOrder: '1',

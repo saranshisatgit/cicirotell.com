@@ -13,6 +13,9 @@ interface Page {
   title: string;
   slug: string;
   content: string | null;
+  pageType: string;
+  showInMenu: boolean;
+  menuOrder: string;
   published: boolean;
   featuredImage: File | null;
 }
@@ -105,10 +108,10 @@ export default function PagesManagement() {
       title: page.title,
       slug: page.slug,
       content: page.content || '',
-      pageType: 'standard',
+      pageType: page.pageType || 'standard',
       featuredImageId: page.featuredImage?.id || '',
-      showInMenu: false,
-      menuOrder: '0',
+      showInMenu: page.showInMenu || false,
+      menuOrder: page.menuOrder || '0',
       published: page.published,
     });
     setShowForm(true);
