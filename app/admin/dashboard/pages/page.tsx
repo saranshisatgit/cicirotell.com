@@ -170,7 +170,7 @@ export default function PagesManagement() {
               <input
                 type="text"
                 required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                className="mt-1 block w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-md"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               />
@@ -179,7 +179,7 @@ export default function PagesManagement() {
               <label className="block text-sm font-medium text-gray-700">Slug</label>
               <input
                 type="text"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                className="mt-1 block w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-md"
                 value={formData.slug}
                 onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
                 placeholder="Leave blank to auto-generate from title"
@@ -217,7 +217,7 @@ export default function PagesManagement() {
                     <label className="block text-xs font-medium text-gray-700 mb-1">Menu Order</label>
                     <input
                       type="text"
-                      className="block w-full px-3 py-1.5 text-sm border border-gray-300 rounded-md"
+                      className="block w-full px-3 py-1.5 text-sm text-gray-900 bg-white border border-gray-300 rounded-md"
                       value={formData.menuOrder}
                       onChange={(e) => setFormData({ ...formData, menuOrder: e.target.value })}
                       placeholder="0"
@@ -230,8 +230,8 @@ export default function PagesManagement() {
             <div>
               <label className="block text-sm font-medium text-gray-700">Content</label>
               <textarea
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-                rows={6}
+                rows={4}
+                className="mt-1 block w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-md"
                 value={formData.content}
                 onChange={(e) => setFormData({ ...formData, content: e.target.value })}
               />
@@ -239,7 +239,7 @@ export default function PagesManagement() {
             <div>
               <label className="block text-sm font-medium text-gray-700">Featured Image</label>
               <select
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                className="mt-1 block w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-md"
                 value={formData.featuredImageId}
                 onChange={(e) => setFormData({ ...formData, featuredImageId: e.target.value })}
               >

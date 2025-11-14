@@ -215,7 +215,7 @@ export default function BlogManagement() {
               <input
                 type="text"
                 required
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                className="mt-1 block w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-md"
                 value={formData.title}
                 onChange={(e) => setFormData({ ...formData, title: e.target.value })}
               />
@@ -224,7 +224,7 @@ export default function BlogManagement() {
               <label className="block text-sm font-medium text-gray-700">Slug</label>
               <input
                 type="text"
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                className="mt-1 block w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-md"
                 value={formData.slug}
                 onChange={(e) => setFormData({ ...formData, slug: e.target.value })}
                 placeholder="Leave blank to auto-generate"
@@ -234,24 +234,11 @@ export default function BlogManagement() {
             <div>
               <label className="block text-sm font-medium text-gray-700">Excerpt</label>
               <textarea
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
+                className="mt-1 block w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-md"
                 rows={2}
                 value={formData.excerpt}
                 onChange={(e) => setFormData({ ...formData, excerpt: e.target.value })}
               />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Content (Markdown supported)</label>
-              <textarea
-                className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md font-mono text-sm"
-                rows={12}
-                value={formData.content}
-                onChange={(e) => setFormData({ ...formData, content: e.target.value })}
-                placeholder="Write your blog post content here. You can use markdown formatting..."
-              />
-              <p className="mt-1 text-xs text-gray-500">
-                Supports: **bold**, *italic*, # headings, - lists, [links](url), ![images](url)
-              </p>
             </div>
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Featured Image</label>
@@ -271,7 +258,7 @@ export default function BlogManagement() {
                 </div>
                 <div className="text-xs text-gray-500">Or select from existing:</div>
                 <select
-                  className="block w-full px-3 py-2 border border-gray-300 rounded-md text-sm"
+                  className="block w-full px-3 py-2 text-gray-900 bg-white border border-gray-300 rounded-md text-sm"
                   value={formData.featuredImageId}
                   onChange={(e) => setFormData({ ...formData, featuredImageId: e.target.value })}
                 >

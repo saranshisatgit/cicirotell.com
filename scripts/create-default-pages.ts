@@ -24,15 +24,6 @@ async function createDefaultPages() {
         menuOrder: '2',
         published: true,
       },
-      {
-        title: 'Contact',
-        slug: 'contact',
-        content: 'Get in touch with us',
-        pageType: 'standard',
-        showInMenu: true,
-        menuOrder: '3',
-        published: true,
-      },
     ];
 
     for (const page of defaultPages) {
