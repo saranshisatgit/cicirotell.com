@@ -26,6 +26,7 @@ import { Navbar, NavbarItem, NavbarSection, NavbarSpacer } from '@/components/ca
 import { Avatar } from '@/components/catalyst/avatar';
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from '@/components/catalyst/dropdown';
 import { ArrowRightStartOnRectangleIcon } from '@heroicons/react/16/solid';
+import { ToastProvider } from '@/contexts/ToastContext';
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const { data: session, status } = useSession();
@@ -51,7 +52,8 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
   }
 
   return (
-    <SidebarLayout
+    <ToastProvider>
+      <SidebarLayout
       navbar={
         <Navbar>
           <NavbarSpacer />
@@ -130,6 +132,7 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     >
       {children}
     </SidebarLayout>
+    </ToastProvider>
   );
 }
 

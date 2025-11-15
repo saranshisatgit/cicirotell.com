@@ -12,6 +12,8 @@ import { Textarea } from '@/components/catalyst/textarea';
 import { Dropdown, DropdownButton, DropdownItem, DropdownMenu } from '@/components/catalyst/dropdown';
 import { Checkbox, CheckboxField, CheckboxGroup } from '@/components/catalyst/checkbox';
 import { EllipsisVerticalIcon } from '@heroicons/react/16/solid';
+import MediaModal from '@/components/MediaModal';
+import { useToast } from '@/contexts/ToastContext';
 
 interface File {
   id: string;
@@ -32,11 +34,13 @@ interface Page {
 }
 
 export default function PagesManagement() {
+  const { showToast } = useToast();
   const [pages, setPages] = useState<Page[]>([]);
   const [files, setFiles] = useState<File[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingPage, setEditingPage] = useState<Page | null>(null);
+  const [showMediaModal, setShowMediaModal] = useState(false);
   const [formData, setFormData] = useState({
     title: '',
     slug: '',
@@ -105,11 +109,15 @@ export default function PagesManagement() {
       });
 
       if (res.ok) {
+        showToast(editingPage ? 'Page updated successfully' : 'Page created successfully', 'success');
         resetForm();
         fetchPages();
+      } else {
+        showToast('Failed to save page', 'error');
       }
     } catch (error) {
       console.error('Error saving page:', error);
+      showToast('An error occurred while saving', 'error');
     }
   };
 
@@ -129,13 +137,15 @@ export default function PagesManagement() {
   };
 
   const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this page?')) return;
+    if (!window.confirm('Are you sure you want to delete this page?')) return;
 
     try {
       await fetch(`/api/admin/pages?id=${id}`, { method: 'DELETE' });
+      showToast('Page deleted successfully', 'success');
       fetchPages();
     } catch (error) {
       console.error('Error deleting page:', error);
+      showToast('Failed to delete page', 'error');
     }
   };
 
@@ -250,18 +260,21 @@ export default function PagesManagement() {
               </Field>
               <Field>
                 <Label>Featured Image</Label>
-                <Select
-                  name="featuredImageId"
-                  value={formData.featuredImageId}
-                  onChange={(e) => setFormData({ ...formData, featuredImageId: e.target.value })}
-                >
-                  <option value="">No Image</option>
-                  {files.map((file) => (
-                    <option key={file.id} value={file.id}>
-                      {file.name}
-                    </option>
-                  ))}
-                </Select>
+                <div className="flex items-center gap-3">
+                  {formData.featuredImageId && (
+                    <div className="text-sm text-zinc-600 dark:text-zinc-400">
+                      {files.find(f => f.id === formData.featuredImageId)?.name || 'Image selected'}
+                    </div>
+                  )}
+                  <Button
+                    type="button"
+                    plain
+                    onClick={() => setShowMediaModal(true)}
+                  >
+                    {formData.featuredImageId ? 'Change Image' : 'Select Image'}
+                  </Button>
+                </div>
+                <Description>Click to select a featured image from your media library</Description>
               </Field>
               <CheckboxField>
                 <Checkbox
@@ -326,6 +339,15 @@ export default function PagesManagement() {
         </TableBody>
       </Table>
       )}
+
+      {/* Media Modal */}
+      <MediaModal
+        isOpen={showMediaModal}
+        onClose={() => setShowMediaModal(false)}
+        onSelect={(fileId) => setFormData({ ...formData, featuredImageId: fileId })}
+        selectedFileId={formData.featuredImageId}
+        title="Select Featured Image"
+      />
     </div>
   );
 }
